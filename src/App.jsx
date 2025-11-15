@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react"
+import "bootstrap"
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+  async function fetchJson(url) {
+    const res = await fetch(url)
+    const obj = await res.json()
+    return obj
+}
+
+const [politicians, setPoliticians] = useState([])
+
+
+async function callPoliticians () {
+  const data = await fetchJson("http://localhost:3333/politicians")
+  setPoliticians(data)
+  console.log(setPoliticians)
+}
+
+useEffect(() => {
+  callPoliticians()
+},[])
+ 
+
+return (
+  <>
+<div>
+  <div className="row">
+  {politicians.map((politician) => (
+    <div className="col-12 col-md-4 mb-4" key={politician.id}>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <img src={politician.image} className="card-img-top" alt={politician.name} />
+        <div className="card-body">
+          <h4 className="card-title text-center text-primary">{politician.name}</h4>
+          <p className="card-text fw-bold text-center">{politician.position}</p>
+          <p className="card-text">{politician.biography}</p>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  ))}
+</div>
+</div>
+
+</>
+)
+
+
+
+
+
+
 }
 
 export default App
