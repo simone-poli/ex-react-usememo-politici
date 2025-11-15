@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import "bootstrap"
+
 
 function App() {
 
@@ -10,6 +10,11 @@ function App() {
 }
 
 const [politicians, setPoliticians] = useState([])
+const [searchPoliticians, setSearchPoliticians] = useState("")
+const filteredPoliticians = politicians.filter(p =>
+  p.name.toLowerCase().includes(searchPoliticians.toLowerCase()) ||
+  p.biography.toLowerCase().includes(searchPoliticians.toLowerCase())
+);
 
 
 async function callPoliticians () {
@@ -26,8 +31,17 @@ useEffect(() => {
 return (
   <>
 <div>
+  <div className="text-center m-4">
+  <input 
+  type="text" 
+  placeholder="Filtra politico..."
+  value={searchPoliticians}
+  onChange={(e) => setSearchPoliticians(e.target.value)}
+  />
+  <button className="m-2">Avvia ricerca</button>
+  </div>
   <div className="row">
-  {politicians.map((politician) => (
+  {filteredPoliticians.map((politician) => (
     <div className="col-12 col-md-4 mb-4" key={politician.id}>
       <div className="card">
         <img src={politician.image} className="card-img-top" alt={politician.name} />
