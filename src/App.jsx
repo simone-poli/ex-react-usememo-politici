@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import  { useState, useEffect, memo } from "react"
 
 
 function App() {
@@ -20,13 +20,29 @@ const filteredPoliticians = politicians.filter(p =>
 async function callPoliticians () {
   const data = await fetchJson("http://localhost:3333/politicians")
   setPoliticians(data)
-  console.log(setPoliticians)
 }
 
 useEffect(() => {
   callPoliticians()
 },[])
- 
+
+function politiciansCard ({politician}){
+  console.log(politician.name)
+  return(
+    <div className="col-12 col-md-4 mb-4">
+      <div className="card">
+        <img src={politician.image} className="card-img-top" alt={politician.name} />
+        <div className="card-body">
+          <h4 className="card-title text-center text-primary">{politician.name}</h4>
+          <p className="card-text fw-bold text-center">{politician.position}</p>
+          <p className="card-text">{politician.biography}</p>
+        </div>
+      </div>
+    </div>
+)}
+
+
+const MemoPolitician = memo(politiciansCard)
 
 return (
   <>
@@ -41,19 +57,10 @@ return (
   <button className="m-2">Avvia ricerca</button>
   </div>
   <div className="row">
-  {filteredPoliticians.map((politician) => (
-    <div className="col-12 col-md-4 mb-4" key={politician.id}>
-      <div className="card">
-        <img src={politician.image} className="card-img-top" alt={politician.name} />
-        <div className="card-body">
-          <h4 className="card-title text-center text-primary">{politician.name}</h4>
-          <p className="card-text fw-bold text-center">{politician.position}</p>
-          <p className="card-text">{politician.biography}</p>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
+    {filteredPoliticians.map((p) => (
+      <MemoPolitician key={p.id} politician={p}/>
+    ))}
+  </div>
 </div>
 
 </>
